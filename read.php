@@ -22,7 +22,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     <td><?php echo $row['brand']; ?></td>
     <td><?php echo $row['price']; ?></td>
     <td>
-        <a href="edit.php?id=<?php echo $row['id']; ?>">Edit</a>
+        <a href="update.php?id=<?php echo $row['id']; ?>">Edit</a>
         <a href="delete.php?id=<?php echo $row['id']; ?>">Delete</a>
     </td>
 </tr>
