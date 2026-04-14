@@ -1,21 +1,27 @@
 <?php include 'connection.php'; ?>
 
 <?php
+// ✅ Check if ID exists
 if (!isset($_GET['id'])) {
-    die("Error: ID not provided");
+    die("Error: No ID provided in URL");
 }
 
-$id = $_GET['id'];
-$result = mysqli_query($conn, "SELECT * FROM cars WHERE id='$id'");
+$id = intval($_GET['id']); // convert to integer (important)
 
+// ✅ Run query
+$result = mysqli_query($conn, "SELECT * FROM cars WHERE id=$id");
+
+// ✅ Check query success
 if (!$result) {
-    die("Error: " . mysqli_error($conn));
+    die("SQL Error: " . mysqli_error($conn));
 }
 
+// ✅ Fetch data
 $row = mysqli_fetch_assoc($result);
 
+// ✅ Check if record exists
 if (!$row) {
-    die("Error: Car not found");
+    die("Car not found");
 }
 ?>
 
