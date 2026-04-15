@@ -1,4 +1,4 @@
-<?php include 'connection.php'; ?>
+<?php include 'connection`.php'; ?>
 
 <form method="POST">
     Name: <input type="text" name="name"><br>
