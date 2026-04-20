@@ -1,8 +1,12 @@
 <?php
+session_start();
 require_once "connection.php";
 
 $sql = "SELECT * FROM cars ORDER BY created_at DESC";
 $result = mysqli_query($conn, $sql);
+
+$isAdmin = isset($_SESSION["role"]) && $_SESSION["role"] === 'admin';
+$isLoggedIn = isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,8 +18,22 @@ $result = mysqli_query($conn, $sql);
 </head>
 <body>
     <div class="container">
-        <h2>Car Management System</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Car Management System <?php if($isAdmin) echo "- Admin Portal"; ?></h2>
+            <div>
+                <?php if($isLoggedIn): ?>
+                    <span>Welcome, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b></span>
+                    <a href="logout.php" class="btn btn-warning" style="margin-left: 10px;">Logout</a>
+                <?php else: ?>
+                    <a href="login.php" class="btn btn-primary">Login</a>
+                    <a href="register.php" class="btn btn-warning" style="margin-left: 5px;">Register</a>
+                <?php endif; ?>
+            </div>
+        </div>
+        
+        <?php if($isAdmin): ?>
         <a href="create.php" class="btn btn-success">+ Add New Car</a>
+        <?php endif; ?>
         
         <table>
             <thead>
@@ -25,7 +43,9 @@ $result = mysqli_query($conn, $sql);
                     <th>Model</th>
                     <th>Year</th>
                     <th>Color</th>
+                    <?php if($isAdmin): ?>
                     <th>Actions</th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -38,14 +58,18 @@ $result = mysqli_query($conn, $sql);
                         echo "<td>" . htmlspecialchars($row['model']) . "</td>";
                         echo "<td>" . $row['year'] . "</td>";
                         echo "<td>" . htmlspecialchars($row['color']) . "</td>";
-                        echo "<td>
-                                <a href='update.php?id=" . $row['id'] . "' class='btn btn-warning'>Edit</a> 
-                                <a href='delete.php?id=" . $row['id'] . "' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this car?\")'>Delete</a>
-                              </td>";
+                        
+                        if($isAdmin) {
+                            echo "<td>
+                                    <a href='update.php?id=" . $row['id'] . "' class='btn btn-warning'>Edit</a> 
+                                    <a href='delete.php?id=" . $row['id'] . "' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this car?\")'>Delete</a>
+                                  </td>";
+                        }
                         echo "</tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='6' style='text-align:center;'>No cars found</td></tr>";
+                    $cols = $isAdmin ? 6 : 5;
+                    echo "<tr><td colspan='$cols' style='text-align:center;'>No cars found</td></tr>";
                 }
                 ?>
             </tbody>

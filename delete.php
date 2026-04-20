@@ -1,4 +1,9 @@
 <?php
+session_start();
+if(!isset($_SESSION["loggedin"]) || $_SESSION["role"] !== 'admin'){
+    header("location: index.php");
+    exit;
+}
 // Process delete operation after confirmation
 if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
     require_once "connection.php";

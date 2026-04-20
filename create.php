@@ -1,4 +1,9 @@
 <?php
+session_start();
+if(!isset($_SESSION["loggedin"]) || $_SESSION["role"] !== 'admin'){
+    header("location: index.php");
+    exit;
+}
 require_once "connection.php";
 
 $brand = $model = $year = $color = "";
