@@ -1,12 +1,15 @@
 <?php
 session_start();
+
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+
 require_once "connection.php";
 
 $sql = "SELECT * FROM cars ORDER BY created_at DESC";
 $result = mysqli_query($conn, $sql);
-
-$isAdmin = isset($_SESSION["role"]) && $_SESSION["role"] === 'admin';
-$isLoggedIn = isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,22 +21,14 @@ $isLoggedIn = isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true;
 </head>
 <body>
     <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>Car Management System <?php if($isAdmin) echo "- Admin Portal"; ?></h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Car Management System</h2>
             <div>
-                <?php if($isLoggedIn): ?>
-                    <span>Welcome, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b></span>
-                    <a href="logout.php" class="btn btn-warning" style="margin-left: 10px;">Logout</a>
-                <?php else: ?>
-                    <a href="login.php" class="btn btn-primary">Login</a>
-                    <a href="register.php" class="btn btn-warning" style="margin-left: 5px;">Register</a>
-                <?php endif; ?>
+                <span>Welcome, <?php echo htmlspecialchars($_SESSION["username"]); ?>!</span>
+                <a href="logout.php" class="btn btn-danger" style="margin-left: 10px;">Logout</a>
             </div>
         </div>
-        
-        <?php if($isAdmin): ?>
-        <a href="create.php" class="btn btn-success">+ Add New Car</a>
-        <?php endif; ?>
+        <a href="create.php" class="btn btn-success" style="margin-bottom: 20px;">+ Add New Car</a>
         
         <table>
             <thead>
@@ -43,9 +38,7 @@ $isLoggedIn = isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true;
                     <th>Model</th>
                     <th>Year</th>
                     <th>Color</th>
-                    <?php if($isAdmin): ?>
                     <th>Actions</th>
-                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -58,18 +51,14 @@ $isLoggedIn = isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true;
                         echo "<td>" . htmlspecialchars($row['model']) . "</td>";
                         echo "<td>" . $row['year'] . "</td>";
                         echo "<td>" . htmlspecialchars($row['color']) . "</td>";
-                        
-                        if($isAdmin) {
-                            echo "<td>
-                                    <a href='update.php?id=" . $row['id'] . "' class='btn btn-warning'>Edit</a> 
-                                    <a href='delete.php?id=" . $row['id'] . "' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this car?\")'>Delete</a>
-                                  </td>";
-                        }
+                        echo "<td>
+                                <a href='update.php?id=" . $row['id'] . "' class='btn btn-warning'>Edit</a> 
+                                <a href='delete.php?id=" . $row['id'] . "' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this car?\")'>Delete</a>
+                              </td>";
                         echo "</tr>";
                     }
                 } else {
-                    $cols = $isAdmin ? 6 : 5;
-                    echo "<tr><td colspan='$cols' style='text-align:center;'>No cars found</td></tr>";
+                    echo "<tr><td colspan='6' style='text-align:center;'>No cars found</td></tr>";
                 }
                 ?>
             </tbody>

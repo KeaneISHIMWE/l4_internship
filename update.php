@@ -1,7 +1,7 @@
 <?php
 session_start();
-if(!isset($_SESSION["loggedin"]) || $_SESSION["role"] !== 'admin'){
-    header("location: index.php");
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
     exit;
 }
 require_once "connection.php";
@@ -120,7 +120,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         .error { color: #dc3545; font-size: 14px; }
     </style>
 </head>
-<body>
+<body>   
     <div class="container" style="max-width: 500px;">
         <h2>Update Car</h2>
         <p>Please edit the input values and submit to update the car record.</p>

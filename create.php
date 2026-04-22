@@ -1,7 +1,7 @@
 <?php
 session_start();
-if(!isset($_SESSION["loggedin"]) || $_SESSION["role"] !== 'admin'){
-    header("location: index.php");
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
     exit;
 }
 require_once "connection.php";
@@ -47,10 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             $param_brand = $brand;
             $param_model = $model;
-            $param_year = $year;
-            $param_color = $color;
+            $param_year = $year;     
+            $param_color = $color;   
             
-            if (mysqli_stmt_execute($stmt)) {
+            if (mysqli_stmt_execute($#)) {
                 header("location: index.php");
                 exit();
             } else {
