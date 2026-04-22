@@ -28,7 +28,9 @@ $result = mysqli_query($conn, $sql);
                 <a href="logout.php" class="btn btn-danger" style="margin-left: 10px;">Logout</a>
             </div>
         </div>
+        <?php if(isset($_SESSION["role"]) && $_SESSION["role"] === 'admin'): ?>
         <a href="create.php" class="btn btn-success" style="margin-bottom: 20px;">+ Add New Car</a>
+        <?php endif; ?>
         
         <table>
             <thead>
@@ -38,7 +40,9 @@ $result = mysqli_query($conn, $sql);
                     <th>Model</th>
                     <th>Year</th>
                     <th>Color</th>
+                    <?php if(isset($_SESSION["role"]) && $_SESSION["role"] === 'admin'): ?>
                     <th>Actions</th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -51,10 +55,12 @@ $result = mysqli_query($conn, $sql);
                         echo "<td>" . htmlspecialchars($row['model']) . "</td>";
                         echo "<td>" . $row['year'] . "</td>";
                         echo "<td>" . htmlspecialchars($row['color']) . "</td>";
-                        echo "<td>
-                                <a href='update.php?id=" . $row['id'] . "' class='btn btn-warning'>Edit</a> 
-                                <a href='delete.php?id=" . $row['id'] . "' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this car?\")'>Delete</a>
-                              </td>";
+                        if(isset($_SESSION["role"]) && $_SESSION["role"] === 'admin'){
+                            echo "<td>
+                                    <a href='update.php?id=" . $row['id'] . "' class='btn btn-warning'>Edit</a> 
+                                    <a href='delete.php?id=" . $row['id'] . "' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this car?\")'>Delete</a>
+                                  </td>";
+                        }
                         echo "</tr>";
                     }
                 } else {
